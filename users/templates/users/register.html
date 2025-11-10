@@ -67,23 +67,23 @@
             text-align: center;
         }
     </style>
+
 </head>
 <body>
     <div class="form-container">
         <h1>Register form!</h1>
-        
         <form class='text-center' action='/users/register/' method='post'>
             {% csrf_token %}
             
             {% for field in form %}
             <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> <!-- Username, Password, Password confirmation -->
+                {{ field }}  <!-- renders the actual input field -->
                 {% if field.help_text %}
-                    <div class="helptext">{{ field.help_text }}</div>
+                    <div class="helptext">{{ field.help_text }}</div>  <!--  thsis shows fro exampl == Your password must contain at least 8 characters -->
                 {% endif %}
                 {% if field.errors %}
-                    <div class="error">{{ field.errors }}</div>
+                    <div class="error">{{ field.errors }}</div>  
                 {% endif %}
             </div>
             {% endfor %}

@@ -31,19 +31,19 @@
 <body>
     <!-- User Info Bar -->
     <div class="user-info">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated %} 
             Welcome, <strong>{{ user.username }}</strong>!
             <form action="{% url 'users:logout' %}" method='post'>
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
         {% else %}
-            <a href="{% url 'users:login' %}">Login</a>
+            <a href="{% url 'users:login' %}">Login</a>    
             <a href="{% url 'users:register' %}">Register</a>
         {% endif %}
     </div>
 
-    <!-- Main Content -->
+    
     <div class="content">
         {% block content %}
         {% endblock %}

@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic Tac Toe - Game List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .game-list { margin: 20px 0; }
+        .game-item { padding: 15px; border: 1px solid #ddd; margin: 10px 0; border-radius: 5px; }
+        .btn { padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>Active Tic Tac Toe Games</h1>
+    
+    <a href="{% url 'new_game' %}" class="btn">Start New Game</a>
+    
+    <div class="game-list">
+        {% for game in games %}
+        <div class="game-item">
+            <h3>Room: {{ game.room_name }}</h3>
+            <p>Owner: {{ game.owner.username }}</p>
+            <p>Status: {{ game.get_game_state_display }}</p>
+            <p>Current Player: {{ game.get_active_player_display }}</p>
+            <a href="{% url 'game_detail' game.id %}" class="btn">
+                {% if request.user == game.owner %}Play Game{% else %}Watch Game{% endif %}
+            </a>
+        </div>
+        {% empty %}
+        <p>No active games. Start one!</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
