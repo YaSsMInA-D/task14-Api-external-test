@@ -45,6 +45,11 @@
             font-size: 14px;
             margin-top: 5px;
         }
+        .helptext {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
         button {
             background: #007bff;
             color: white;
@@ -86,15 +91,7 @@
             {% endif %}
     
             
-            {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <div class="error">{{ field.errors }}</div>
-                {% endif %}
-            </div>
-            {% endfor %}
+            {% include "default_form_snippet.html" %}
             
             <button type="submit">Login</button>
         </form>

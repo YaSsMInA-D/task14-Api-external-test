@@ -1,0 +1,27 @@
+
+{% for field in form %}
+<div class="form-group">
+    {% if field.errors %}
+        <div class="error">
+            {% for error in field.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}  <!-- <input>, <textarea>,-->
+    
+    {% if field.help_text %}
+        <div class="helptext">{{ field.help_text }}</div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% if form.non_field_errors %} <!-- password doesnt match -->
+    <div class="error">
+        {% for error in form.non_field_errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+{% endif %}

@@ -129,30 +129,30 @@
         </div>
     </div>
 
-    <!-- Pass game data to JavaScript -->
-    {{ game_data|json_script:"game-data" }}
+    
+    {{ game_data|json_script:"game-data" }} <!--  filter converts Python to JSON,creates a hidden <script>with ID  -->
     
     <script>
         // Get game data from Django template
-        const gameData = JSON.parse(document.getElementById('game-data').textContent);
+        const gameData = JSON.parse(document.getElementById('game-data').textContent); //Text → JavaScript
         const userId = {{ user.id }};
-        const userName = "{{ user.username }}";
+        const userName = "{{ user.username }}";  //Gets current username from Django template.
         
         // WebSocket connection
-        const gameSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/game/' + gameData.id + '/'
+        const gameSocket = new WebSocket(    //Creates WebSocket connection to the game rooms
+            'ws://' + window.location.host + '/ws/game/' + gameData.id + '/'   //window.location.host: Gets current domain:port (localhost:8000)
         );
 
         gameSocket.onopen = function(e) {
-            console.log('WebSocket connection established');
+            console.log('WebSocket connection established');  //Called when WebSocket connection opens successfully
             showLiveUpdate('Connected to game');
         };
 
-        gameSocket.onmessage = function(e) {
+        gameSocket.onmessage = function(e) {   //Called when WebSocket receives message from server.
             const data = JSON.parse(e.data);
             console.log('WebSocket message received:', data);
             
-            if (data.type === 'game_update') {
+            if (data.type === 'game_update') {   //Handles game state updates (when opponent moves).
                 updateGameState(data.game_data);
                 if (data.message) {
                     showLiveUpdate(data.message);
@@ -164,21 +164,21 @@
             }
         };
 
-        gameSocket.onclose = function(e) {
+        gameSocket.onclose = function(e) {    //Called when WebSocket connection closes
             console.log('WebSocket connection closed');
             showLiveUpdate('Connection lost - refreshing...');
-            setTimeout(() => {
+            setTimeout(() => {    //Reloads the page after 3 seconds
                 location.reload();
             }, 3000);
         };
 
-        function updateGameState(gameData) {
+        function updateGameState(gameData) { // Capitalizes game state (active → Active
             // Update game status
             document.getElementById('game-status').textContent = 
                 gameData.game_state.charAt(0).toUpperCase() + gameData.game_state.slice(1);
             document.getElementById('game-status').className = 'status-' + gameData.game_state;
             
-            // Update current player
+            //Shows whose turn it is con s
             const currentPlayerDisplay = gameData.current_player === 'X' ? 'Player X (❌)' : 'Player O (⭕)';
             document.getElementById('current-player').textContent = currentPlayerDisplay;
             
@@ -190,7 +190,7 @@
             }
             
             // Update player O status
-            const playerOStatus = document.getElementById('player-o-status');
+            const playerOStatus = document.getElementById('player-o-status');  //Shows second player's name 
             if (playerOStatus && gameData.player_o) {
                 playerOStatus.innerHTML = `<strong>⭕ ${gameData.player_o}</strong>`;
             }
@@ -202,13 +202,13 @@
             updatePlayerMessage(gameData);
         }
 
-        function updateBoard(boardString) {
+        function updateBoard(boardString) { //Loops through all 9 board cells and updates them.
             const cells = document.querySelectorAll('.cell');
             for (let i = 0; i < 9; i++) {
                 const cell = cells[i];
                 const symbol = boardString[i];
                 
-                cell.className = 'cell';
+                cell.className = 'cell';   // Updates each cell con x or o
                 if (symbol === 'X') {
                     cell.className += ' x';
                     cell.innerHTML = '❌';
@@ -222,12 +222,12 @@
             }
         }
 
-        function updatePlayerMessage(gameData) {
+        function updatePlayerMessage(gameData) {   // Determines user's symbol (X if owner, O if second player, null if spectator
             const playerMessage = document.getElementById('player-message');
             const userSymbol = (userId === gameData.owner_id) ? 'X' : 
                               (userId === gameData.player_o_id) ? 'O' : null;
             
-            let message = '';
+            let message = '';          //messages based on game state:
             if (gameData.game_state === 'active') {
                 if (userSymbol) {
                     if (userSymbol === gameData.current_player) {
@@ -254,17 +254,17 @@
         function makeMove(position) {
             // Check if it's the user's turn and the cell is empty
             const cell = document.querySelector(`.cell[data-position="${position}"]`);
-            if (cell.classList.contains('empty') && gameData.game_state === 'active') {
-                gameSocket.send(JSON.stringify({
-                    'type': 'make_move',
-                    'position': position,
+            if (cell.classList.contains('empty') && gameData.game_state === 'active') {  //Validates move (
+                gameSocket.send(JSON.stringify({  //tells that player moved to a position
+                    'type': 'make_move',    // Tells server what action
+                    'position': position,   
                     'user_id': userId
                 }));
             }
         }
 
-        function joinGame() {
-            gameSocket.send(JSON.stringify({
+        function joinGame() {  //Sends join request to server
+            gameSocket.send(JSON.stringify({  
                 'type': 'join_game',
                 'user_id': userId
             }));
@@ -279,7 +279,7 @@
             
             setTimeout(() => {
                 liveUpdate.style.display = 'none';
-            }, 5000);
+            }, 5000);   //fades after 5 seconds
         }
     </script>
 </body>

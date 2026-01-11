@@ -7,4 +7,3 @@ class GameAdmin(admin.ModelAdmin):
     list_filter = ['game_state', 'current_player']
     search_fields = ['room_name', 'owner__username']
 
-# REMOVE THIS LINE: admin.site.register(Game) - DELETE THIS LINE

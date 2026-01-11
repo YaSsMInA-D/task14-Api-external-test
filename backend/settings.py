@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'users',
     'tailwind',
     'theme',
+    'rest_framework',
+    'api',
     'django_browser_reload',
     
 ]
@@ -60,8 +62,9 @@ CHANNEL_LAYERS = {
 }
 
 
-LOGIN_REDIRECT_URL = '/games/'
-LOGOUT_REDIRECT_URL = '/'
+
+
+
 
 
 
@@ -158,5 +161,4 @@ NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 

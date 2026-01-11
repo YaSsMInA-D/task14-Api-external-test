@@ -1,8 +1,8 @@
-from django.db import models
-from django.contrib.auth.models import User
+from django.db import models  # Imports Django's model system to create database tables
+from django.contrib.auth.models import User # only users can login,play
 
 class Game(models.Model):
-    # Player choices
+   
     PLAYER_X = 'X'
     PLAYER_O = 'O'
     PLAYER_CHOICES = [
@@ -20,7 +20,7 @@ class Game(models.Model):
         (STATE_TIE, 'Tie'),
     ]
     
-    # Fields as required by Task 10 & 11
+
     room_name = models.CharField(max_length=100, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='games_owned')
     player_o = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='games_as_player_o')  # NEW: Second player
@@ -35,7 +35,7 @@ class Game(models.Model):
     
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('games:game_detail', kwargs={'game_id': self.id})
+        return reverse('games:game_detail', kwargs={'game_id': self.id}) #returns url for id game
     
     def is_player(self, user):
         """Check if user is a player in this game"""
@@ -50,8 +50,8 @@ class Game(models.Model):
         return None
     
     def get_board_display(self):
-        """Return board as a 3x3 list for template rendering"""
-        board_list = list(self.board.ljust(9))
+        """Return board as a 3x3 grid """
+        board_list = list(self.board.ljust(9)) # Ensure board is always 9 characters
         return [
             board_list[0:3],
             board_list[3:6],
@@ -69,7 +69,7 @@ class Game(models.Model):
         
         for line in lines:
             if board[line[0]] != ' ' and board[line[0]] == board[line[1]] == board[line[2]]:
-                return board[line[0]]  # Return the winning player
+                return board[line[0]]  # Return the winning player  #Check each line - if all 3 positions have same symbol (X or O)
         
         if ' ' not in board:
             return 'tie'
@@ -86,17 +86,17 @@ class Game(models.Model):
         if player_symbol != self.current_player:
             return False, "It's not your turn"
         
-        if position < 0 or position > 8:
+        if position < 0 or position > 8: # Invalid position
             return False, "Invalid position"
         
-        board_list = list(self.board)
+        board_list = list(self.board) #
         
-        if board_list[position] != ' ':
+        if board_list[position] != ' ': 
             return False, "Position already taken"
         
         # Make the move
         board_list[position] = self.current_player
-        self.board = ''.join(board_list)
+        self.board = ''.join(board_list)  #Update board with X or O.
         
         # Check for winner
         result = self.check_winner()
@@ -111,7 +111,7 @@ class Game(models.Model):
                 self.save()
                 return True, f"Player {result} wins!"
         else:
-            # Switch to next player
+            # Switch to next player turns
             self.current_player = self.PLAYER_O if self.current_player == self.PLAYER_X else self.PLAYER_X
             self.save()
             return True, "Move made successfully"
